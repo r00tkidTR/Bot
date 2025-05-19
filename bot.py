@@ -13,7 +13,7 @@ CHAT_ID = "1559265898"
 
 client = UMFutures(key=API_KEY, secret=API_SECRET)
 bot = Bot(token=TELEGRAM_TOKEN)
-send_telegram("Bot Baþladý")
+send_telegram("Bot BaÃ¾ladÃ½")
 entry_prices = {}
 
 with open("symbol_config.json", "r") as f:
@@ -23,9 +23,9 @@ def send_telegram(message):
     try:
         bot.send_message(chat_id=CHAT_ID, text=message)
     except Exception as e:
-        print(f"Telegram Hatasý: {e}")
+        print(f"Telegram HatasÃ½: {e}")
 
-def get_trade_quantity(symbol, entry_price, percent=30):
+def get_trade_quantity(symbol, entry_price, percent=50):
     balance = float(client.balance()[0]['balance'])
     usdt_to_use = balance * (percent / 100)
     qty = usdt_to_use / entry_price
@@ -60,9 +60,9 @@ def open_position(symbol, side):
             quantity=qty
         )
         entry_prices[symbol] = entry_price
-        send_telegram(f"{symbol} için {side} pozisyon açýldý: {qty} @ {entry_price}")
+        send_telegram(f"{symbol} iÃ§in {side} pozisyon aÃ§Ã½ldÃ½: {qty} @ {entry_price}")
     except Exception as e:
-        send_telegram(f"{symbol} pozisyon açýlýrken hata: {e}")
+        send_telegram(f"{symbol} pozisyon aÃ§Ã½lÃ½rken hata: {e}")
 
 def close_position(symbol, side):
     try:
@@ -74,10 +74,10 @@ def close_position(symbol, side):
             type="MARKET",
             quantity=qty
         )
-        send_telegram(f"{symbol} için {side} pozisyon kapatýldý: {qty}")
+        send_telegram(f"{symbol} iÃ§in {side} pozisyon kapatÃ½ldÃ½: {qty}")
         entry_prices.pop(symbol, None)
     except Exception as e:
-        send_telegram(f"{symbol} pozisyon kapanýrken hata: {e}")
+        send_telegram(f"{symbol} pozisyon kapanÃ½rken hata: {e}")
 
 def check_profit_loss(symbol):
     if symbol not in entry_prices:
@@ -86,10 +86,10 @@ def check_profit_loss(symbol):
     current = float(client.ticker_price(symbol=symbol)['price'])
     change = (current - entry) / entry * 100
     if change >= 5:
-        send_telegram(f"{symbol}: +%{round(change, 2)} kar, pozisyon kapatýlýyor.")
+        send_telegram(f"{symbol}: +%{round(change, 2)} kar, pozisyon kapatÃ½lÃ½yor.")
         close_position(symbol, "LONG")
     elif change <= -2:
-        send_telegram(f"{symbol}: %{round(change, 2)} zarar, pozisyon kapatýlýyor.")
+        send_telegram(f"{symbol}: %{round(change, 2)} zarar, pozisyon kapatÃ½lÃ½yor.")
         close_position(symbol, "LONG")
 
 def run_bot():
